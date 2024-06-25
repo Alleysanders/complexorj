@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Complexo RJ</title>
+  <style>
+    body {
+      height: 100%;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+      background-color: #fff;
+      /*background: linear-gradient(to right, #ffcc88, #ffaa64);*/
+    }
+
+    .menu {
+      width: 100%;
+      background: #333;
+      overflow: hidden;
+      position: fixed;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .menu a {
+      float: left;
+      display: block;
+      color: white;
+      text-align: center;
+      padding: 14px 20px;
+      text-decoration: none;
+      font-size: 1rem;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .menu a:hover {
+      background-color: #ddd;
+      color: black;
+    }
+
+    .menu a.active {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    .menu::after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+
+    .logo-container {
+      margin-top: 60px; /* Espaço para a barra de menu */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px 0;
+    }
+
+    .logo-container img {
+      border-radius: 60%;
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+      transition: transform 1.3s;
+    }
+
+    .logo-container img:hover {
+      transform: scale(1.08);
+    }
+
+    .container-calendar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      padding: 20px;
+    }
+
+    .calendar {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 5px;
+      background-color: white;
+      border-radius: 10px;
+      padding: 0px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 1200px;
+    }
+
+    .day-names {
+      display: contents;
+    }
+
+    .day-name {
+      text-align: center;
+      font-weight: bold;
+      padding: 5px;
+      border-bottom: 2px solid #999; /* Escurecer um pouco a borda */
+    }
+
+    .day {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: left;
+      height: 150px;
+      background-color: #f9f9f9;
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      padding: 10px;
+      box-sizing: border-box;
+      border: 2px solid #999; /* Borda mais grossa e mais escura */
+      transition: background-color 0.3s, transform 0.3s;
+    }
+
+    .day.event {
+      background-size: cover;
+      background-position: center;
+      color: black; /* Texto em preto */
+      position: relative;
+    }
+
+    .day.event::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.8); /* Opacidade de 20% */
+      z-index: 1;
+    }
+
+    .day.event .day-number,
+    .day.event .info {
+      position: relative;
+      z-index: 2;
+    }
+
+    .day:hover {
+      background-color: #e6e6e6; /* Clarear suavemente */
+      transform: translateY(-2px);
+    }
+
+    .day .day-number {
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+
+    .day .info {
+      margin-top: 5px;
+      text-align: left; /* Alinhar o texto à esquerda */
+      font-size: 0.9rem;
+      padding-right: 00px; /* Ajuste este valor conforme necessário */
+    }
+
+    .header {
+      grid-column: span 7;
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 768px) {
+      .day {
+        height: 100px;
+      }
+
+      .day .info {
+        font-size: 0.8rem;
+      }
+    }
+    
+    .contrast-toggle {
+      float: right;
+      padding: 14px 20px;
+      cursor: pointer;
+    }
+
+    .contrast-toggle svg {
+      width: 24px;
+      height: 24px;
+      fill: white;
+      transition: fill 0.3s;
+    }
+
+    .contrast-toggle:hover svg {
+      fill: #4CAF50;
+    }
+
+    /* Estilos de alto contraste */
+    .high-contrast {
+      background-color: #000 !important; /*MUDA O BACKGROUND*/
+      color: #fff !important;
+    }
+
+    .high-contrast body {
+      background: #000 !important;
+      color: #fff !important;
+    }
+
+    .high-contrast .container-calendar,
+    .high-contrast .menu,
+    .high-contrast .menu a,
+    .high-contrast input[type="number"],
+    .high-contrast select,
+    .high-contrast button {
+      background-color: #000 !important;
+      color: #fff !important;
+      border-color: #fff !important;
+    }
+
+    .high-contrast .calendar {
+      background-color: #000 !important;
+    }
+
+    .high-contrast .day {
+      background-color: #222 !important;
+      color: #fff !important;
+      border-color: #fff !important;
+    }
+
+    .high-contrast .day-name {
+      border-color: #fff !important;
+    }
+
+    .high-contrast .menu a:hover {
+      background-color: #555 !important;
+    }
+
+    .high-contrast .logo-container img {
+      border-color: #fff !important;
+    }
+
+    .high-contrast .day.event {
+      color: #000 !important;
+      background: #444 !important;
+    }
+    
+    .high-contrast .day.event::after {
+      background: rgba(255, 255, 255, 0.2) !important;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="menu">
+    <a href="index.html" class="active">📅 Calendário</a>
+    <a href="calculadora.html">🧮 Calculadora</a>
+    <a href="https://docs.google.com/document/d/1XySUGouSX_v7_JbU94gTeucxiMRMD6ZkI4-NvG-I9Ks/edit?pli=1">📜 Regras Complexo RJ</a>
+    <!-- <a href="https://gamma.app/docs/c89cuiiu7iap7f3">Guia STAFF</a> -->
+    <a href="#" onclick="return checkPassword()">🔐 Guia STAFF</a>
+    <a href="skinshp.html">🍼 Hospital</a>
+    <div class="contrast-toggle" id="contrastToggle">
+      <svg viewbox="0 0 24 24">
+        <path d="M12 1a9 9 0 1 0 0 18 9 9 0 0 0 0-18zm0-1a10 10 0 1 1 0 20 10 10 0 0 1 0-20z"/>
+        <path d="M12 4a8 8 0 1 0 0 16V4z"/>
+      </svg>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('contrastToggle').addEventListener('click', function () {
+      document.body.classList.toggle('high-contrast');
+    });
+  </script>
+  
+  <div class="logo-container">
+    <img src="https://i.ibb.co/wLhYcTn/NOVALOGOCPXRJ.png" alt="Complexo RJ">
+  </div>
+
+  <div class="container-calendar">
+    <div class="calendar">
+      <div class="header" id="calendarHeader">Junho 2024</div>
+      <div class="day-names">
+        <div class="day-name">Domingo</div>
+        <div class="day-name">Segunda</div>
+        <div class="day-name">Terça</div>
+        <div class="day-name">Quarta</div>
+        <div class="day-name">Quinta</div>
+        <div class="day-name">Sexta</div>
+        <div class="day-name">Sábado</div>
+      </div>
+      <!-- Dias serão preenchidos dinamicamente -->
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      function getCurrentDate() {
+        const today = new Date();
+        const month = today.getMonth();
+        const year = today.getFullYear();
+        return { month, year };
+      }
+
+      function createCalendar(month, year) {
+        const calendar = document.querySelector(".calendar");
+        const header = document.getElementById("calendarHeader");
+
+        const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+        header.textContent = `${months[month]} ${year}`;
+
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+        const dayInfo = {
+          1: { text: "🎯 Início das Metas", image: "url('https://via.placeholder.com/150')" },
+          15: { text: "📝 Avaliação Parcial", image: "url('https://via.placeholder.com/150')" },
+          21: { text: "🔥 Festa Junina", image: "url('https://via.placeholder.com/150')" },
+          30: { text: "🎯 Fim das Metas<br>🎯 Reset das Metas", image: "url('https://via.placeholder.com/150')" },
+          // Adicione mais dias e eventos conforme necessário
+        };
+
+        // Preenche os dias do calendário
+        for (let i = 0; i < firstDay; i++) {
+          const emptyCell = document.createElement("div");
+          emptyCell.classList.add("day");
+          calendar.appendChild(emptyCell);
+        }
+
+        for (let day = 1; day <= daysInMonth; day++) {
+          const dayCell = document.createElement("div");
+          dayCell.classList.add("day");
+          dayCell.setAttribute("data-day", day);
+          const info = dayInfo[day];
+          if (info) {
+            dayCell.classList.add("event");
+            dayCell.style.backgroundImage = info.image;
+            dayCell.innerHTML = `<div class="day-number">${day}</div><div class="info"><strong>${info.text}</strong></div>`;
+          } else {
+            dayCell.innerHTML = `<div class="day-number">${day}</div><div class="info"></div>`;
+          }
+          calendar.appendChild(dayCell);
+        }
+      }
+
+      const { month, year } = getCurrentDate();
+      createCalendar(month, year);
+    });
+    
+     async function checkPassword() {
+    try {
+      const response = await fetch('/get-password');
+      const data = await response.json();
+      const Password = data.password;
+
+      const inputPassword = prompt("Digite a senha:");
+      if (inputPassword === Password) {
+        window.location.href = "https://gamma.app/docs/Guia-staff-c89cuiiu7iap7f3";
+        return false; // Prevent default anchor behavior
+      } else {
+        alert("Senha incorreta!");
+        return false; // Prevent default anchor behavior
+      }
+    } catch (error) {
+      console.error('Erro ao verificar a senha:', error);
+      alert('Erro ao verificar a senha. Tente novamente mais tarde.');
+      return false; // Prevent default anchor behavior
+    }
+  }
+    
+  </script>
+</body>
+</html>

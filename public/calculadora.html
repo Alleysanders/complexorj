@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Complexo RJ</title>
+  <style>
+    body {
+      height: 100%;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to right, #ffcc88, #ffaa64);
+    }
+
+    .snowflake {
+      position: fixed;
+      top: 0;
+      font-size: 1rem;
+      color: #fff;
+      user-select: none;
+      pointer-events: none;
+      animation: snowfall linear infinite;
+      transform-origin: 0 0;
+      z-index: 1;
+    }
+
+    @keyframes snowfall {
+      0% {
+        transform: translateY(-100%);
+      }
+      100% {
+        transform: translateY(100vh);
+      }
+    }
+
+    .container-calculator {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: linear-gradient(to right, #ffffff, #f0f0f0);
+      margin: 0;
+      padding: 0;
+      background-attachment: fixed;
+      padding-top: 80px;
+    }
+
+    .items-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 20px;
+      padding: 16px;
+      max-height: 40vh;
+      overflow-y: auto;
+      width: 94%;
+      margin: 0 auto;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+      background-color: #fefefe;
+      border-radius: 24px;
+      border: 2px solid #ddd;
+      justify-content: center;
+      align-content: start;
+    }
+
+    .items-container::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    .items-container::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+
+    .items-container::-webkit-scrollbar-thumb {
+      background: #808080;
+    }
+
+    .items-container::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+
+    .item {
+      border: 2px solid #dddddd;
+      padding: 10px;
+      background-color: #ffffff;
+      border-radius: 14px;
+      box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 180px;
+      height: 120px;
+      transition: transform 0.3s;
+    }
+
+    .item:hover {
+      transform: scale(1.05);
+    }
+
+    .item-name {
+      margin: 5px 0;
+      color: #333;
+      font-weight: bold;
+    }
+
+    .item-price {
+      margin: 5px 0;
+      font-weight: bold;
+      color: #28a745;
+      font-size: 1.1rem;
+    }
+
+    .calculator {
+      padding: 20px;
+      background-color: #ffffff;
+      border-radius: 24px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+      border: none;
+      text-align: center;
+      max-width: 400px;
+      width: 100%;
+      margin: 20px auto;
+    }
+
+    .total {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    input[type="number"] {
+      width: 80px;
+      height: 30px;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      padding: 5px;
+      text-align: center;
+      box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.2);
+      margin-top: 10px;
+    }
+
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      opacity: 1;
+    }
+
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
+
+    input[type="number"]:focus {
+      border-color: #808080;
+    }
+
+   .logo-container img {
+      margin-top: 0px;
+      margin-bottom: 20px; /* Ajuste o valor conforme necessário */
+      border-radius: 50%;
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+      transition: transform 1.3s;
+    }
+    
+    .logo-container img:hover {
+      transform: scale(1.08);
+    }
+
+    #clearButton {
+      background-color: #ff4c4c;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
+      margin-top: 20px;
+    }
+
+    #clearButton:hover,
+    #clearButton:focus {
+      background-color: #ff1a1a;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+      transform: translateY(-2px) scale(1.05);
+    }
+
+    #clearButton:active {
+      background-color: #e60000;
+      transform: translateY(1px) scale(0.95);
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    #categorySelect {
+      padding: 10px 20px;
+      border: 2px solid #ddd;
+      border-radius: 5px;
+      background-color: white;
+      color: #333;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+
+    #categorySelect:focus {
+      outline: none;
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+
+    .selected-items-container {
+      background-color: #ffffff;
+      border-radius: 24px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 18px;
+      max-width: 400px;
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    .selected-items-list {
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .selected-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+
+    .selected-items-title {
+      background-color: #808080;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 16px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      font-size: 1.4rem;
+      margin-bottom: 20px;
+    }
+
+    .search-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    #searchBox {
+      padding: 10px;
+      border: 2px solid #ddd;
+      border-radius: 5px;
+      margin-right: 10px;
+      font-size: 1rem;
+    }
+
+    #searchButton {
+      padding: 10px;
+      border: none;
+      background-color: #808080;
+      color: white;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 1rem;
+      transition: background-color 0.3s;
+    }
+
+    #searchButton:hover {
+      background-color: #555;
+    }
+
+    .menu {
+      width: 100%;
+      background: #333;
+      overflow: hidden;
+      position: fixed;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .menu a {
+      float: left;
+      display: block;
+      color: white;
+      text-align: center;
+      padding: 14px 20px;
+      text-decoration: none;
+      font-size: 1rem;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .menu a:hover {
+      background-color: #ddd;
+      color: black;
+    }
+
+    .menu a.active {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    .menu::after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+
+    .contrast-toggle {
+      float: right;
+      padding: 14px 20px;
+      cursor: pointer;
+    }
+
+    .contrast-toggle svg {
+      width: 24px;
+      height: 24px;
+      fill: white;
+      transition: fill 0.3s;
+    }
+
+    .contrast-toggle:hover svg {
+      fill: #4CAF50;
+    }
+
+    /* Estilos de alto contraste */
+    .high-contrast {
+      background-color: #000 !important;
+      color: #fff !important;
+    }
+
+    .high-contrast body {
+      background: #000 !important;
+      color: #fff !important;
+    }
+
+    .high-contrast .container-calculator {
+      background: linear-gradient(to right, #000000, #111111) !important;
+    }
+
+    .high-contrast .items-container,
+    .high-contrast .selected-items-container,
+    .high-contrast .calculator,
+    .high-contrast .search-container,
+    .high-contrast .menu,
+    .high-contrast .menu a,
+    .high-contrast input[type="number"],
+    .high-contrast select,
+    .high-contrast button {
+      background-color: #000 !important;
+      color: #fff !important;
+      border-color: #fff !important;
+    }
+
+    .high-contrast .item {
+      background-color: #222 !important;
+      color: #fff !important;
+      border-color: #fff !important;
+    }
+
+    .high-contrast .item-name,
+    .high-contrast .item-price {
+      color: #fff !important;
+    }
+
+    .high-contrast .menu a:hover {
+      background-color: #555 !important;
+    }
+
+    .high-contrast input[type="number"],
+    .high-contrast select,
+    .high-contrast button {
+      background-color: #333 !important;
+      color: #fff !important;
+      border-color: #fff !important;
+    }
+
+    .high-contrast .logo-container img {
+      border-color: #fff !important;
+    }
+
+    .high-contrast #searchButton {
+      background-color: #555 !important;
+      color: #fff !important;
+    }
+
+    .high-contrast .snowflake {
+      color: #fff !important;
+    }
+
+    .high-contrast .selected-items-title {
+      background-color: #555 !important;
+      color: #fff !important;
+    }
+
+    .high-contrast .item:hover {
+      transform: scale(1.05);
+      background-color: #444 !important;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="menu">
+    <a href="index.html">📅 Calendário</a>
+    <a href="calculadora.html" class="active">🧮 Calculadora</a>
+    <a href="https://docs.google.com/document/d/1XySUGouSX_v7_JbU94gTeucxiMRMD6ZkI4-NvG-I9Ks/edit?pli=1">📜 Regras Complexo RJ</a>
+    <a href="#" onclick="return checkPassword()">🔐 Guia STAFF</a>
+    <a href="skinshp.html">🍼 Hospital</a>
+    <div class="contrast-toggle" id="contrastToggle">
+      <svg viewbox="0 0 24 24">
+        <path d="M12 1a9 9 0 1 0 0 18 9 9 0 0 0 0-18zm0-1a10 10 0 1 1 0 20 10 10 0 0 1 0-20z"/>
+        <path d="M12 4a8 8 0 1 0 0 16V4z"/>
+      </svg>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('contrastToggle').addEventListener('click', function () {
+      document.body.classList.toggle('high-contrast');
+    });
+  </script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      function clearAllFields() {
+        document.querySelectorAll(".item-quantity").forEach((input) => {
+          input.value = "0";
+        });
+        updateTotal();
+      }
+
+      const clearButton = document.getElementById("clearButton");
+      clearButton.addEventListener("click", clearAllFields);
+
+      function createSnowflake() {
+        const snowflake = document.createElement("div");
+        snowflake.className = "snowflake";
+        snowflake.innerHTML = " ";
+        snowflake.style.opacity = "0.5"; // Define a opacidade para 20%
+        snowflake.style.left = Math.random() * 100 + "vw";
+        snowflake.style.animationDuration = Math.random() * 5 + 5 + "s";
+        document.body.appendChild(snowflake);
+
+        snowflake.addEventListener("animationiteration", () => {
+          snowflake.remove();
+        });
+      }
+
+      setInterval(createSnowflake, 100);
+
+      const itemsContainer = document.querySelector(".items-container");
+      const totalValue = document.getElementById("totalValue");
+
+      const items = [
+        { name: "Parafal", price: 3825000, categoria: "armas" },
+        { name: "G36", price: 2550000, categoria: "armas" },
+        { name: "HK", price: 2380000, categoria: "armas" },
+        { name: "Scarh-H", price: 2040000, categoria: "armas" },
+        { name: "M4A1", price: 1785000, categoria: "armas" },
+        { name: "MTAR", price: 1615000, categoria: "armas" },
+        { name: "AK47", price: 1275000, categoria: "armas" },
+        { name: "Navycarbine", price: 1062000, categoria: "armas" },
+        { name: "Machinepistol", price: 552000, categoria: "armas" },
+        { name: "MP9", price: 238000, categoria: "armas" },
+        { name: "Pistol Mk2", price: 297000, categoria: "armas" },
+        { name: "Combatpistol (Glock)", price: 350000, categoria: "armas" },
+        { name: "Microsmg (UZI)", price: 350000, categoria: "armas" },
+        { name: "SMG (MP5)", price: 1000000, categoria: "armas" },
+        { name: "Gusenberg (Thompson)", price: 640000, categoria: "armas" },
+        { name: "Stungun (Taser)", price: 5000000, categoria: "armas" },
+        { name: "Snspistol (Hk P7M10)", price: 2380000, categoria: "armas" },
+        { name: "Pistol50 (.50)", price: 320000, categoria: "armas" },
+        { name: "M9A3", price: 500000, categoria: "armas" },
+        { name: "Nsr", price: 3900000, categoria: "armas" },
+        { name: "Scorpionevo", price: 690000, categoria: "armas" },
+        { name: "Carbinerifle Mk2 (M4A4)", price: 2400000, categoria: "armas" },
+
+        { name: "Munição de Parafal", price: 5400, categoria: "municao" },
+        { name: "Munição de G36", price: 4800, categoria: "municao" },
+        { name: "Munição de HK", price: 3800, categoria: "municao" },
+        { name: "Munição de Scarh-H", price: 3600, categoria: "municao" },
+        { name: "Munição de M4A1", price: 3400, categoria: "municao" },
+        { name: "Munição de MTAR", price: 3250, categoria: "municao" },
+        { name: "Munição de AK47", price: 2900, categoria: "municao" },
+        { name: "Munição de Navycarbine", price: 2450, categoria: "municao" },
+        { name: "Munição de Machinepistol", price: 1950, categoria: "municao" },
+        { name: "Munição de MP9", price: 1250, categoria: "municao" },
+        { name: "Munição de Pistol Mk2", price: 1450, categoria: "municao" },
+        { name: "Munição de Combatpistol", price: 2500, categoria: "municao" },
+        { name: "Munição de Microsmg", price: 3000, categoria: "municao" },
+        { name: "Munição de SMG", price: 3000, categoria: "municao" },
+        { name: "Munição de Assaultsmg", price: 3250, categoria: "municao" },
+        { name: "Munição de Gusenberg", price: 3500, categoria: "municao" },
+        { name: "Munição de Snspistol", price: 3800, categoria: "municao" },
+        { name: "Munição de Pistol50", price: 2500, categoria: "municao" },
+        { name: "Munição de Scarh", price: 5000, categoria: "municao" },
+        { name: "Munição de Nsr", price: 12000, categoria: "municao" },
+        { name: "Munição de Scorpionevo", price: 4200, categoria: "municao" },
+        { name: "Munição de M4A4", price: 1000, categoria: "municao" },
+
+        { name: "Knife (Faca)", price: 250000, categoria: "armas-brancas" },
+        { name: "Bat (Taco)", price: 250000, categoria: "armas-brancas" },
+        { name: "Ticket", price: 60000, categoria: "armas-brancas" },
+        { name: "Notebook", price: 150000, categoria: "armas-brancas" },
+        { name: "Battleaxe (Machado)", price: 250000, categoria: "armas-brancas" },
+        { name: "Knuckle (Soco-Inglês)", price: 250000, categoria: "armas-brancas" },
+        { name: "Switchblade (Canivete)", price: 250000, categoria: "armas-brancas" },
+
+        { name: "Algemas", price: 100000, categoria: "outros-itens" },
+        { name: "Master Pick", price: 100000, categoria: "outros-itens" },
+        { name: "C4", price: 100000, categoria: "outros-itens" },
+        { name: "Lock Pick", price: 100000, categoria: "outros-itens" },
+        { name: "Nitro", price: 150000, categoria: "outros-itens" },
+        { name: "Colete", price: 220000, categoria: "outros-itens" },
+        { name: "Pe de Cabra", price: 120000, categoria: "outros-itens" },
+        { name: "Garrafa Vazia", price: 700, categoria: "outros-itens" },
+        { name: "Energético", price: 35000, categoria: "outros-itens" },
+        { name: "Roupas", price: 15000, categoria: "outros-itens" },
+        { name: "Radio", price: 10000, categoria: "outros-itens" },
+        { name: "Binoculos", price: 20000, categoria: "outros-itens" },
+        { name: "Repairkit", price: 35000, categoria: "outros-itens" },
+        { name: "Pneus", price: 2000, categoria: "outros-itens" },
+        { name: "Celular", price: 5000, categoria: "outros-itens" },
+        { name: "Militec", price: 35000, categoria: "outros-itens" },
+        { name: "Oxigênio", price: 30000, categoria: "outros-itens" },
+        { name: "Dorflex", price: 15000, categoria: "outros-itens" },
+        { name: "Aliança", price: 50000, categoria: "outros-itens" },
+        { name: "Cordas", price: 10000, categoria: "outros-itens" },
+        { name: "Mochila", price: 30000, categoria: "outros-itens" },
+        { name: "Paraquedas", price: 12000, categoria: "outros-itens" },
+        { name: "Bandagem", price: 135000, categoria: "outros-itens" },
+        { name: "Farm", price: 1000, categoria: "outros-itens" },
+        { name: "Capuz", price: 100000, categoria: "outros-itens" },
+        { name: "Placa", price: 100000, categoria: "outros-itens" },
+        { name: "Blacklist", price: 2000000, categoria: "outros-itens" },
+        { name: "Adrenalina", price: 250000, categoria: "outros-itens" },
+        { name: "Pedra de Crack", price: 0, categoria: "outros-itens" },
+        { name: "Lança Perfume", price: 0, categoria: "outros-itens" },
+        { name: "Ecstasy", price: 0, categoria: "outros-itens" },
+
+        { name: "Maconha (Venda)", price: 14900, categoria: "drogas" },
+        { name: "Maconha (Uso)", price: 10000, categoria: "drogas" },
+        { name: "Cocaína (Venda)", price: 14900, categoria: "drogas" },
+        { name: "Cocaína (Uso)", price: 10000, categoria: "drogas" },
+        { name: "Drogas (Unin.)", price: 10400, categoria: "drogas" },
+
+        { name: "Esmeralda", price: 800, categoria: "recursos" },
+        { name: "Ouro", price: 800, categoria: "recursos" },
+        { name: "Bronze", price: 600, categoria: "recursos" },
+        { name: "Topazio", price: 700, categoria: "recursos" },
+        { name: "Ferro", price: 600, categoria: "recursos" },
+        { name: "Ametista", price: 600, categoria: "recursos" },
+        { name: "Diamante", price: 900, categoria: "recursos" },
+        { name: "Safira", price: 700, categoria: "recursos" },
+        { name: "Rubi", price: 900, categoria: "recursos" },
+
+        { name: "Tucunare", price: 580, categoria: "peixes" },
+        { name: "Salmão", price: 500, categoria: "peixes" },
+        { name: "Dourado", price: 550, categoria: "peixes" },
+        { name: "Tilapia", price: 480, categoria: "peixes" },
+        { name: "Pirarucu", price: 500, categoria: "peixes" },
+        { name: "Corvina", price: 500, categoria: "peixes" },
+        { name: "Lambari", price: 100, categoria: "peixes" },
+        { name: "Pintado", price: 480, categoria: "peixes" },
+        { name: "Pacu", price: 480, categoria: "peixes" },
+      ];
+
+      function addItemsToContainer() {
+        items.forEach((item) => {
+          const itemDiv = document.createElement("div");
+          itemDiv.className = "item";
+          itemDiv.setAttribute("data-category", item.categoria);
+
+          const nameDiv = document.createElement("div");
+          nameDiv.className = "item-name";
+          nameDiv.textContent = item.name;
+
+          const priceDiv = document.createElement("div");
+          priceDiv.className = "item-price";
+          priceDiv.textContent = `R$ ${item.price}`;
+
+          const quantityInput = document.createElement("input");
+          quantityInput.type = "number";
+          quantityInput.value = "0";
+          quantityInput.min = "0";
+          quantityInput.className = "item-quantity";
+          quantityInput.dataset.price = item.price;
+          quantityInput.addEventListener("input", updateTotal);
+
+          itemDiv.appendChild(nameDiv);
+          itemDiv.appendChild(priceDiv);
+          itemDiv.appendChild(quantityInput);
+          itemsContainer.appendChild(itemDiv);
+        });
+      }
+
+      function setupFilter() {
+        document
+          .getElementById("categorySelect")
+          .addEventListener("change", function () {
+            var selectedCategory = this.value;
+            document.querySelectorAll(".item").forEach(function (itemDiv) {
+              var itemCategory = itemDiv.getAttribute("data-category");
+              if (
+                selectedCategory === "todos" ||
+                itemCategory === selectedCategory
+              ) {
+                itemDiv.style.display = "block";
+              } else {
+                itemDiv.style.display = "none";
+              }
+            });
+          });
+      }
+
+      function updateSelectedItems() {
+        const selectedItemsList = document.getElementById('selectedItemsList');
+        selectedItemsList.innerHTML = '';
+
+        document.querySelectorAll('.item-quantity').forEach((input) => {
+          const quantity = parseFloat(input.value);
+          if (quantity > 0) {
+            const itemName = input.closest('.item').querySelector('.item-name').textContent;
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'selected-item';
+            itemDiv.textContent = `${itemName} - x ${quantity}`;
+            selectedItemsList.appendChild(itemDiv);
+          }
+        });
+      }
+
+      function updateTotal() {
+        let total = 0;
+        document.querySelectorAll('.item-quantity').forEach((input) => {
+          const price = parseFloat(input.dataset.price);
+          const quantity = parseFloat(input.value);
+          if (!isNaN(price) && !isNaN(quantity)) {
+            total += price * quantity;
+          }
+        });
+        totalValue.textContent = total.toFixed(0).replace('.', ',');
+        updateSelectedItems();
+      }
+
+      addItemsToContainer();
+      setupFilter();
+    });
+  </script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const searchButton = document.getElementById('searchButton');
+      const searchBox = document.getElementById('searchBox');
+      const items = document.querySelectorAll('.item');
+
+      function performSearch() {
+        const searchText = searchBox.value.toLowerCase();
+        items.forEach((item) => {
+          const itemName = item.querySelector('.item-name').textContent.toLowerCase();
+          if (itemName.includes(searchText)) {
+            item.style.display = 'block';
+          } else {
+            item.style.display = 'none';
+          }
+        });
+      }
+
+      searchButton.addEventListener('click', performSearch);
+
+      searchBox.addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          performSearch();
+        }
+      });
+    });
+    
+     async function checkPassword() {
+    try {
+      const response = await fetch('/get-password');
+      const data = await response.json();
+      const Password = data.password;
+
+      const inputPassword = prompt("Digite a senha:");
+      if (inputPassword === Password) {
+        window.location.href = "https://gamma.app/docs/c89cuiiu7iap7f3";
+        return false; // Prevent default anchor behavior
+      } else {
+        alert("Senha incorreta!");
+        return false; // Prevent default anchor behavior
+      }
+    } catch (error) {
+      console.error('Erro ao verificar a senha:', error);
+      alert('Erro ao verificar a senha. Tente novamente mais tarde.');
+      return false; // Prevent default anchor behavior
+    }
+  }
+    
+  </script>
+
+  <div class="container-calculator">
+    <div class="logo-container">
+      <img src="https://i.ibb.co/wLhYcTn/NOVALOGOCPXRJ.png" alt="Complexo RJ" />
+    </div>
+
+    <div class="search-container">
+      <div class="category-filter">
+        <select id="categorySelect">
+          <option value="todos">Todos</option>
+          <option value="armas">Armas</option>
+          <option value="armas-brancas">Armas Brancas</option>
+          <option value="drogas">Drogas</option>
+          <option value="municao">Munição</option>
+          <option value="recursos">Recursos</option>
+          <option value="peixes">Peixes</option>
+          <option value="outros-itens">Outros Itens</option>
+        </select>
+      </div>
+      <input type="text" id="searchBox" placeholder="Digite para pesquisar..." />
+      <button id="searchButton">Pesquisar</button>
+    </div>
+
+    <div class="items-container">
+    </div>
+
+    <div class="selected-items-container">
+      <h3 class="selected-items-title">Itens selecionados:</h3>
+      <div id="selectedItemsList" class="selected-items-list">
+      </div>
+    </div>
+
+    <div class="calculator">
+      <h3>TOTAL (R$)</h3>
+      <div class="total">
+        <span id="totalValue" class="total-value">0</span>
+      </div>
+      <button id="clearButton">Limpar</button>
+    </div>
+  </div>
+</body>
+</html>

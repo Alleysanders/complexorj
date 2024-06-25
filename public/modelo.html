@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modelo Base</title>
+  <style>
+    body {
+      height: 100%;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+      background-color: #fff;
+    }
+
+    .menu {
+      width: 100%;
+      background: #333;
+      overflow: hidden;
+      position: fixed;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .menu a {
+      float: left;
+      display: block;
+      color: white;
+      text-align: center;
+      padding: 14px 20px;
+      text-decoration: none;
+      font-size: 1rem;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .menu a:hover {
+      background-color: #ddd;
+      color: black;
+    }
+
+    .menu a.active {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    .menu::after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+
+    .logo-container {
+      margin-top: 60px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px 0;
+    }
+
+    .logo-container img {
+      border-radius: 60%;
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+      transition: transform 1.3s;
+    }
+
+    .logo-container img:hover {
+      transform: scale(1.08);
+    }
+
+    .contrast-toggle {
+      float: right;
+      padding: 14px 20px;
+      cursor: pointer;
+    }
+
+    .contrast-toggle svg {
+      width: 24px;
+      height: 24px;
+      fill: white;
+      transition: fill 0.3s;
+    }
+
+    .contrast-toggle:hover svg {
+      fill: #4CAF50;
+    }
+
+    .high-contrast {
+      background-color: #000 !important;
+      color: #fff !important;
+    }
+
+    .high-contrast body {
+      background: #000 !important;
+      color: #fff !important;
+    }
+
+    .high-contrast .menu,
+    .high-contrast .menu a,
+    .high-contrast .logo-container img {
+      background-color: #000 !important;
+      color: #fff !important;
+      border-color: #fff !important;
+    }
+
+    .high-contrast .menu a:hover {
+      background-color: #555 !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="menu">
+    <a href="index.html">Calendário</a>
+    <a href="calculadora.html">Calculadora</a>
+    <a href="https://docs.google.com/document/d/1XySUGouSX_v7_JbU94gTeucxiMRMD6ZkI4-NvG-I9Ks/edit?pli=1">Regras Complexo RJ</a>
+    <a href="https://gamma.app/docs/c89cuiiu7iap7f3">Guia STAFF</a>
+    <a href="modelo.html" class="active">Tutoriais STAFF</a>
+    <div class="contrast-toggle" id="contrastToggle">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 1a9 9 0 1 0 0 18 9 9 0 0 0 0-18zm0-1a10 10 0 1 1 0 20 10 10 0 0 1 0-20z"/>
+        <path d="M12 4a8 8 0 1 0 0 16V4z"/>
+      </svg>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('contrastToggle').addEventListener('click', function () {
+      document.body.classList.toggle('high-contrast');
+    });
+  </script>
+  
+  <div class="logo-container">
+    <img src="https://i.ibb.co/wLhYcTn/NOVALOGOCPXRJ.png" alt="Complexo RJ">
+  </div>
+</body>
+</html>
